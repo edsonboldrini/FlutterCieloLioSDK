@@ -1,0 +1,66 @@
+group 'br.com.rsmarques.flutter_cielo_lio_sdk'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 21 //Alterado para a SDK minima da Cielo
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    implementation 'com.cielo.lio:order-manager:1.5.1'
+}
+
+//https://github.com/flutter/flutter/wiki/Experimental:-Create-Flutter-Plugin
+// TODO(<github-username>): Remove this hack once androidx.lifecycle is included on stable. https://github.com/flutter/flutter/issues/42348
+afterEvaluate {
+    def containsEmbeddingDependencies = false
+    for (def configuration : configurations.all) {
+        for (def dependency : configuration.dependencies) {
+            if (dependency.group == 'io.flutter' &&
+                    dependency.name.startsWith('flutter_embedding') &&
+                    dependency.isTransitive())
+            {
+                containsEmbeddingDependencies = true
+                break
+            }
+        }
+    }
+    if (!containsEmbeddingDependencies) {
+        android {
+            dependencies {
+                def lifecycle_version = "1.1.1"
+                compileOnly "android.arch.lifecycle:runtime:$lifecycle_version"
+                compileOnly "android.arch.lifecycle:common:$lifecycle_version"
+                compileOnly "android.arch.lifecycle:common-java8:$lifecycle_version"
+            }
+        }
+    }
+}
+
