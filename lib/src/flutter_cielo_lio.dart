@@ -45,12 +45,11 @@ class FlutterCieloLioSDK {
 
   static void printImage(
       {@required String name, List<int> bytes, Map<String, int> style}) async {
-    Map<String, dynamic> _params = {};
-
     final tempDir = await getTemporaryDirectory();
     final file = await new File('${tempDir.path}/$name').create();
-
     await file.writeAsBytes(bytes);
+
+    Map<String, dynamic> _params = {};
     _params['name'] = file.path;
     print('File Path ${file.path}');
     _params['style'] = style;

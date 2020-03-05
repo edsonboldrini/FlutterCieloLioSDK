@@ -150,11 +150,8 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
     private void printMultipleColumnText(MethodCall call) {
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
         ArrayList<String> stringArray = (ArrayList<String>) argsMap.get("stringList");
-
         String[] stringColumns = new String[stringArray.size()];
         stringColumns = stringArray.toArray(stringColumns);
-        Log.d(DEBUG_NAME, stringColumns.toString());
-
         List<Map<String, Integer>> style = (List<Map<String, Integer>>) argsMap.get("style");
 
         printerManager.printMultipleColumnText(stringColumns, style, printerListener);
@@ -181,7 +178,6 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
     }
 
     private void printQrCode(@NonNull MethodCall call) {
-
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
         String text = (String) argsMap.get("text");
         int align = (int) argsMap.get("align");
