@@ -10,10 +10,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-
-  FlutterCieloLioSDK cielolio = FlutterCieloLioSDK();
-
   @override
   void initState() {
     super.initState();
@@ -32,7 +28,25 @@ class _MyAppState extends State<MyApp> {
       print(
           'InitSession error: ${platformException.code} - ${platformException.message}');
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Plugin example app'),
+        ),
+        body: Center(
+            child: RaisedButton(
+          onPressed: _print,
+          child: Text('Imprimir'),
+        )),
+      ),
+    );
+  }
+
+  void _print() async {
     Map<String, int> alignLeft = {};
     Map<String, int> alignCenter = {};
     Map<String, int> alignRight = {};
@@ -50,7 +64,8 @@ class _MyAppState extends State<MyApp> {
     alignRight[PrinterAttributes.KEY_TYPEFACE] = 2;
     alignRight[PrinterAttributes.KEY_TEXT_SIZE] = 20;
 
-    cielolio.printText(
+    //////////////////////////////////////////////////////////////////////
+    FlutterCieloLioSDK.printText(
         text: 'Texto simples a ser impresso.\n Com múltiplas linhas',
         style: alignLeft);
 
@@ -59,28 +74,35 @@ class _MyAppState extends State<MyApp> {
       "Texto centralizado",
       "Texto alinhado à direita"
     ];
-
+    //////////////////////////////////////////////////////////////////////
     List<Map<String, int>> stylesMap = [{}];
 
     stylesMap.add(alignLeft);
     stylesMap.add(alignCenter);
     stylesMap.add(alignRight);
 
-    cielolio.printMultipleColumnText(
+    FlutterCieloLioSDK.printMultipleColumnText(
         stringList: textsToPrint, style: stylesMap);
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
-    );
+    FlutterCieloLioSDK.printBarCode(
+        text: '1234567890098765432112345678900987654321',
+        align: PrinterAttributes.VAL_ALIGN_CENTER,
+        width: 500,
+        height: 200,
+        showContent: false);
+
+    //////////////////////////////////////////////////////////////////////
+
+    FlutterCieloLioSDK.printQrCode(
+        text: "1234567890098765432112345678900987654321",
+        align: PrinterAttributes.VAL_ALIGN_CENTER,
+        size: 500);
+
+    //////////////////////////////////////////////////////////////////////
+    final ByteData bytes = await rootBundle.load('images/logo.png');
+    FlutterCieloLioSDK.printImage(
+        name: 'logo.png',
+        bytes: bytes.buffer.asUint8List(),
+        style: alignCenter);
   }
 }

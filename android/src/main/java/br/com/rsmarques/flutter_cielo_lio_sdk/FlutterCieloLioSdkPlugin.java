@@ -1,6 +1,8 @@
 package br.com.rsmarques.flutter_cielo_lio_sdk;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -22,15 +24,15 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-enum PrinterStatus {
-    NOME, SUCCESS, WITHOUT_PAPER
+class PrinterStatus {
+    static int SUCCESS = 1;
+    static int WITHOUT_PAPER = 2;
 }
 
 /**
  * FlutterCieloLioSdkPlugin
  */
 public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandler, EventChannel.StreamHandler {
-    private Context context;
     private static PrinterManager printerManager;
     private static PrinterListener printerListener;
 
@@ -41,8 +43,6 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
     private static final String EVENT_CHANNEL = "flutter_cielo_lio_sdk/event";
     private EventChannel.EventSink eventSink = null;
     private static final String DEBUG_NAME = "flutter_lio_sdk";
-    private PrinterStatus printerStatus = PrinterStatus.NOME;
-
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -66,8 +66,6 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
     }
 
     private void setupChannels(BinaryMessenger messenger, Context context) {
-        this.context = context;
-
         methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
         eventChannel = new EventChannel(messenger, EVENT_CHANNEL);
 
@@ -112,6 +110,9 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
             case "printMultipleColumnText":
                 printMultipleColumnText(call);
                 break;
+            case "printImage":
+                printImage(call);
+                break;
             case "printBarCode":
                 printBarCode(call);
                 break;
@@ -126,7 +127,6 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        this.context = null;
     }
 
     @Override
@@ -161,7 +161,14 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
     }
 
     private void printImage(MethodCall call) {
+        HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
+        String fileName = (String) argsMap.get("name");
+        Bitmap bitmap = BitmapFactory.decodeFile(fileName);
+        Map<String, Integer> style = (Map<String, Integer>) argsMap.get("style");
 
+        printerManager.printImage(bitmap, style, printerListener);
+
+        eventSink.error("-999", "teste erro", null);
     }
 
     private void printBarCode(@NonNull MethodCall call) {

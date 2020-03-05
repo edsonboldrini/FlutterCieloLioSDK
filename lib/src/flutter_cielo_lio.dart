@@ -4,7 +4,6 @@ class FlutterCieloLioSDK {
   static const _MESSAGE_CHANNEL = 'flutter_cielo_lio_sdk/message';
   static const _EVENT_CHANNEL = 'flutter_cielo_lio_sdk/event';
 
-  static const int STATUS_NOME = 0;
   static const int STATUS_SUCCESS = 1;
   static const int STATUS_WITHOUT_PAPER = 2;
 
@@ -29,14 +28,14 @@ class FlutterCieloLioSDK {
     return _eventChannel.receiveBroadcastStream().map((status) => status);
   }
 
-  void printText({@required String text, Map<String, int> style}) {
+  static void printText({@required String text, Map<String, int> style}) {
     Map<String, dynamic> _params = {};
     _params['text'] = text;
     _params['style'] = style;
     _messageChannel.invokeMethod('printText', _params);
   }
 
-  void printMultipleColumnText(
+  static void printMultipleColumnText(
       {@required List<String> stringList, List<Map<String, int>> style}) {
     Map<String, dynamic> _params = {};
     _params['stringList'] = stringList;
@@ -44,16 +43,21 @@ class FlutterCieloLioSDK {
     _messageChannel.invokeMethod('printMultipleColumnText', _params);
   }
 
-  /*
-  void printImage({@required List<int> bytes, Map<String, int> style}) {
+  static void printImage(
+      {@required String name, List<int> bytes, Map<String, int> style}) async {
     Map<String, dynamic> _params = {};
-    _params['text'] = text;
+
+    final tempDir = await getTemporaryDirectory();
+    final file = await new File('${tempDir.path}/$name').create();
+
+    await file.writeAsBytes(bytes);
+    _params['name'] = file.path;
+    print('File Path ${file.path}');
     _params['style'] = style;
     _messageChannel.invokeMethod('printImage', _params);
   }
-  */
 
-  void printBarCode(
+  static void printBarCode(
       {@required String text,
       int align,
       int width,
@@ -68,7 +72,7 @@ class FlutterCieloLioSDK {
     _messageChannel.invokeMethod('printBarCode', _params);
   }
 
-  void printQrCode({@required String text, int align, int size}) {
+  static void printQrCode({@required String text, int align, int size}) {
     Map<String, dynamic> _params = {};
     _params['text'] = text;
     _params['align'] = align;
