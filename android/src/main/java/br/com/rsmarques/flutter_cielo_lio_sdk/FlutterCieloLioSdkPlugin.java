@@ -167,8 +167,6 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
         Map<String, Integer> style = (Map<String, Integer>) argsMap.get("style");
 
         printerManager.printImage(bitmap, style, printerListener);
-
-        eventSink.error("-999", "teste erro", null);
     }
 
     private void printBarCode(@NonNull MethodCall call) {
