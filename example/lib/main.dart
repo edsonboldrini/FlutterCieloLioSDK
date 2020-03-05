@@ -33,11 +33,41 @@ class _MyAppState extends State<MyApp> {
           'InitSession error: ${platformException.code} - ${platformException.message}');
     });
 
-    cielolio.printText(
-      text: 'text',
-    );
+    Map<String, int> alignLeft = {};
+    Map<String, int> alignCenter = {};
+    Map<String, int> alignRight = {};
 
-    cielolio.printMultipleColumnText(stringList: null);
+    alignLeft[PrinterAttributes.KEY_ALIGN] = PrinterAttributes.VAL_ALIGN_LEFT;
+    alignLeft[PrinterAttributes.KEY_TYPEFACE] = 0;
+    alignLeft[PrinterAttributes.KEY_TEXT_SIZE] = 20;
+
+    alignCenter[PrinterAttributes.KEY_ALIGN] =
+        PrinterAttributes.VAL_ALIGN_CENTER;
+    alignCenter[PrinterAttributes.KEY_TYPEFACE] = 1;
+    alignCenter[PrinterAttributes.KEY_TEXT_SIZE] = 20;
+
+    alignRight[PrinterAttributes.KEY_ALIGN] = PrinterAttributes.VAL_ALIGN_RIGHT;
+    alignRight[PrinterAttributes.KEY_TYPEFACE] = 2;
+    alignRight[PrinterAttributes.KEY_TEXT_SIZE] = 20;
+
+    cielolio.printText(
+        text: 'Texto simples a ser impresso.\n Com múltiplas linhas',
+        style: alignLeft);
+
+    List<String> textsToPrint = [
+      "Texto alinhado à esquerda.",
+      "Texto centralizado",
+      "Texto alinhado à direita"
+    ];
+
+    List<Map<String, int>> stylesMap = [{}];
+
+    stylesMap.add(alignLeft);
+    stylesMap.add(alignCenter);
+    stylesMap.add(alignRight);
+
+    cielolio.printMultipleColumnText(
+        stringList: textsToPrint, style: stylesMap);
   }
 
   @override

@@ -5,11 +5,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cielo.orders.domain.PrinterAttributes;
 import cielo.sdk.order.PrinterListener;
 import cielo.sdk.printer.PrinterManager;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -36,7 +36,7 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
     private static HashMap<String, Integer> alignCenter = new HashMap<>();
     private MethodChannel methodChannel;
     private EventChannel eventChannel;
-    private static final String MESSAGE_CHANNEL = "flutter_cielo_lio_sdk/messages";
+    private static final String MESSAGE_CHANNEL = "flutter_cielo_lio_sdk/message";
     private static final String EVENT_CHANNEL = "flutter_cielo_lio_sdk/event";
     private EventChannel.EventSink eventSink = null;
     private static final String DEBUG_NAME = "flutter_lio_sdk";
@@ -105,9 +105,6 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
-            case "printSimpleText":
-                printSimpleText(call);
-                break;
             case "printText":
                 printText(call);
                 break;
@@ -141,24 +138,6 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
         this.eventSink = null;
     }
 
-
-    private void printSimpleText(MethodCall call) {
-        Log.d(DEBUG_NAME, "context" + context.toString());
-        if (context != null) {
-            Log.d(DEBUG_NAME, "Context diferente null");
-        } else {
-            Log.d(DEBUG_NAME, "Context null");
-        }
-
-        alignCenter.put(PrinterAttributes.KEY_ALIGN, PrinterAttributes.VAL_ALIGN_CENTER);
-        alignCenter.put(PrinterAttributes.KEY_TYPEFACE, 1);
-        alignCenter.put(PrinterAttributes.KEY_TEXT_SIZE, 20);
-
-        Log.d(DEBUG_NAME, "printing simple text");
-        String textToPrint = "TEXTO PARA IMPRIMIR";
-        printerManager.printText(textToPrint, alignCenter, printerListener);
-    }
-
     private void printText(MethodCall call) {
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
         String text = (String) argsMap.get("text");
@@ -169,10 +148,18 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
 
     private void printMultipleColumnText(MethodCall call) {
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
-        String[] stringList = (String[]) argsMap.get("stringList");
+        ArrayList<String> stringArray = (ArrayList<String>) argsMap.get("stringList");
+        String[] strings = new String[0];
+
+        Log.d(DEBUG_NAME, stringArray.toString());
+        for (int i = 0; i < stringArray.size(); i++) {
+            strings[i] = stringArray.get(i);
+        }
+        Log.d(DEBUG_NAME, strings.toString());
+
         List<Map<String, Integer>> style = (List<Map<String, Integer>>) argsMap.get("style");
 
-        printerManager.printMultipleColumnText(stringList, style, printerListener);
+        //printerManager.printMultipleColumnText(strings, style, printerListener);
     }
 
     private void printImage(MethodCall call) {
