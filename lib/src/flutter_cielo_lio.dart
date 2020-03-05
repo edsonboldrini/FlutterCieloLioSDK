@@ -41,7 +41,7 @@ class FlutterCieloLioSDK {
     Map<String, dynamic> _params = {};
     _params['stringList'] = stringList;
     _params['style'] = style;
-    //_messageChannel.invokeMethod('printMultipleColumnText', _params);
+    _messageChannel.invokeMethod('printMultipleColumnText', _params);
   }
 
   /*

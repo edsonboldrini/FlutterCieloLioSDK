@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -149,17 +150,14 @@ public class FlutterCieloLioSdkPlugin implements FlutterPlugin, MethodCallHandle
     private void printMultipleColumnText(MethodCall call) {
         HashMap<String, Object> argsMap = (HashMap<String, Object>) call.arguments;
         ArrayList<String> stringArray = (ArrayList<String>) argsMap.get("stringList");
-        String[] strings = new String[0];
 
-        Log.d(DEBUG_NAME, stringArray.toString());
-        for (int i = 0; i < stringArray.size(); i++) {
-            strings[i] = stringArray.get(i);
-        }
-        Log.d(DEBUG_NAME, strings.toString());
+        String[] stringColumns = new String[stringArray.size()];
+        stringColumns = stringArray.toArray(stringColumns);
+        Log.d(DEBUG_NAME, stringColumns.toString());
 
         List<Map<String, Integer>> style = (List<Map<String, Integer>>) argsMap.get("style");
 
-        //printerManager.printMultipleColumnText(strings, style, printerListener);
+        printerManager.printMultipleColumnText(stringColumns, style, printerListener);
     }
 
     private void printImage(MethodCall call) {
