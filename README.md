@@ -1,6 +1,8 @@
 # flutter_cielo_lio_sdk
 
-A new Flutter plugin.
+Flutter Plugin para realizar a integração entre Flutter e a máquina de cartão de crédito Cielo LIO.
+
+Somente funções de impressão estão disponivéis.
 
 ## Getting Started
 
